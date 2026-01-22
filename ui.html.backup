@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="logo.png">
+  <title>Connect-Comp</title>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 16px;
+      color: var(--figma-color-text);
+      background-color: var(--figma-color-bg);
+    }
+
+    h2 {
+      margin: 0 0 16px 0;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    button {
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      width: 100%;
+      border: 1px solid transparent;
+      outline: none;
+      margin-bottom: 8px;
+    }
+
+    /* Primary Button */
+    .button-primary {
+      background-color: #18A0FB; /* Figma Blue */
+      color: white;
+    }
+    .button-primary:hover {
+      background-color: #0D8CE9;
+    }
+
+    /* Secondary Button */
+    .button-secondary {
+      background-color: transparent;
+      border: 1px solid var(--figma-color-border, #e5e5e5);
+      color: var(--figma-color-text, #333);
+    }
+    .button-secondary:hover {
+      border-color: #b3b3b3;
+    }
+
+    /* Active State for Sync Button */
+    .button-secondary.is-active {
+      border-color: #18A0FB;
+      color: #18A0FB;
+      background-color: rgba(24, 160, 251, 0.05);
+      font-weight: 600;
+    }
+
+    /* To Parent Button */
+    #to-parent-btn {
+      display: none; /* Hidden by default */
+      background: none;
+      border: none;
+      color: #18A0FB;
+      font-size: 11px;
+      text-decoration: underline;
+      padding: 4px;
+      margin-bottom: 4px;
+      width: auto;
+      cursor: pointer;
+      text-align: left;
+    }
+    #to-parent-btn:hover {
+      color: #0D8CE9;
+    }
+
+    .help-text {
+      font-size: 11px;
+      color: var(--figma-color-text-secondary, #888);
+      margin-top: 8px;
+      line-height: 1.4;
+    }
+
+    /* Figma Theme Vars Mockup */
+    :root {
+      --figma-color-text: #333333;
+      --figma-color-bg: #FFFFFF;
+      --figma-color-border: #E5E5E5;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --figma-color-text: #FFFFFF;
+        --figma-color-bg: #2C2C2C;
+        --figma-color-border: #444444;
+        --figma-color-text-secondary: #B0B0B0;
+      }
+      .button-secondary {
+         border-color: #444;
+         color: white;
+      }
+    }
+
+    .sync-section {
+      margin: 12px 0;
+      border-top: 1px solid var(--figma-color-border);
+      padding-top: 12px;
+    }
+
+    .sync-section-title {
+      font-size: 11px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+    }
+
+    .option-label {
+      display: flex;
+      align-items: center;
+      font-size: 11px;
+    }
+
+    .button-container {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .sync-btn-wrapper {
+      opacity: 0.5;
+      cursor: default;
+    }
+  </style>
+</head>
+<body>
+  <h2>Connect-Comp</h2>
+  
+  <button id="create-btn" class="button-primary">Create Linked Copy</button>
+  
+  <div class="sync-section">
+    <div class="sync-section-title">Sync Options</div>
+    <div class="options-grid">
+      <label class="option-label">
+        <input type="checkbox" id="opt-fills" checked> Fills
+      </label>
+      <label class="option-label">
+        <input type="checkbox" id="opt-strokes" checked> Strokes
+      </label>
+      <label class="option-label">
+        <input type="checkbox" id="opt-effects" checked> Effects
+      </label>
+      <label class="option-label">
+        <input type="checkbox" id="opt-text" checked> Text
+      </label>
+      <label class="option-label">
+        <input type="checkbox" id="opt-corners" checked> Corners
+      </label>
+      <label class="option-label">
+        <input type="checkbox" id="opt-flow" checked> Flow
+      </label>
+      <label class="option-label">
+        <input type="checkbox" id="opt-dimension" checked> Dimension
+      </label>
+      <label class="option-label">
+        <input type="checkbox" id="opt-gap" checked> Gap
+      </label>
+      <label class="option-label">
+        <input type="checkbox" id="opt-padding" checked> Padding
+      </label>
+      <label class="option-label">
+        <input type="checkbox" id="opt-name" checked> Layer Name
+      </label>
+    </div>
+  </div>
+
+  <div class="button-container">
+    <button id="to-parent-btn">To parent ↗</button>
+    <button id="sync-btn" class="button-secondary sync-btn-wrapper" disabled>Sync Updates</button>
+  </div>
+  
+  <p class="help-text">Select a component to create a linked copy. Select a linked frame to sync.</p>
+
+  <script>
+    const syncBtn = document.getElementById('sync-btn');
+    const parentBtn = document.getElementById('to-parent-btn');
+
+    document.getElementById('create-btn').onclick = () => {
+      parent.postMessage({ pluginMessage: { type: 'create-linked' } }, '*');
+    };
+
+    document.getElementById('to-parent-btn').onclick = () => {
+      parent.postMessage({ pluginMessage: { type: 'go-to-source' } }, '*');
+    };
+
+    syncBtn.onclick = () => {
+      if (syncBtn.disabled) return;
+      const options = {
+        fills: document.getElementById('opt-fills').checked,
+        strokes: document.getElementById('opt-strokes').checked,
+        effects: document.getElementById('opt-effects').checked,
+        text: document.getElementById('opt-text').checked,
+        corners: document.getElementById('opt-corners').checked,
+        flow: document.getElementById('opt-flow').checked,
+        dimension: document.getElementById('opt-dimension').checked,
+        gap: document.getElementById('opt-gap').checked,
+        padding: document.getElementById('opt-padding').checked
+      };
+      parent.postMessage({ pluginMessage: { type: 'sync', options } }, '*');
+    };
+
+    // Handle messages from plugin code
+    window.onmessage = (event) => {
+      const msg = event.data.pluginMessage;
+      if (msg.type === 'selection-changed') {
+        if (msg.hasLink) {
+          syncBtn.disabled = false;
+          syncBtn.classList.add('is-active');
+          syncBtn.classList.remove('sync-btn-wrapper');
+          parentBtn.style.display = 'block';
+        } else {
+          syncBtn.disabled = true;
+          syncBtn.classList.remove('is-active');
+          syncBtn.classList.add('sync-btn-wrapper');
+          parentBtn.style.display = 'none';
+        }
+      }
+    };
+
+    // Auto-resize
+    window.onload = () => {
+      const height = document.body.offsetHeight;
+      parent.postMessage({ pluginMessage: { type: 'resize', width: 240, height: height } }, '*');
+    };
+  </script>
+</body>
+</html>

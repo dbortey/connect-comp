@@ -3,203 +3,121 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="logo.png">
   <title>Connect-Comp</title>
   <style>
+    * { box-sizing: border-box; }
     body {
-      font-family: 'Inter', sans-serif;
-      margin: 0;
-      padding: 16px;
-      color: var(--figma-color-text);
-      background-color: var(--figma-color-bg);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      margin: 0; padding: 8px;
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1f1f1f 100%);
+      min-height: 100vh; color: #fff;
     }
-
     h2 {
-      margin: 0 0 16px 0;
-      font-size: 16px;
-      font-weight: 600;
+      display: none;
     }
-
     button {
-      border-radius: 6px;
-      padding: 8px 16px;
-      font-family: 'Inter', sans-serif;
-      font-size: 11px;
-      font-weight: 500;
-      cursor: pointer;
-      width: 100%;
-      border: 1px solid transparent;
-      outline: none;
-      margin-bottom: 8px;
+      border-radius: 10px; padding: 12px 20px;
+      font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600;
+      cursor: pointer; width: 100%; border: none; outline: none;
+      margin-bottom: 5px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative; overflow: hidden;
     }
-
-    /* Primary Button */
+    button::before {
+      content: ''; position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+      transform: translateX(-100%); transition: transform 0.6s;
+    }
+    button:hover::before { transform: translateX(100%); }
     .button-primary {
-      background-color: #18A0FB; /* Figma Blue */
-      color: white;
+      background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
+      color: white; box-shadow: 0 4px 15px rgba(247, 151, 30, 0.4);
     }
     .button-primary:hover {
-      background-color: #0D8CE9;
+      transform: translateY(-2px); box-shadow: 0 6px 20px rgba(247, 151, 30, 0.6);
     }
-
-    /* Secondary Button */
+    .button-primary:active { transform: translateY(0); }
     .button-secondary {
-      background-color: transparent;
-      border: 1px solid var(--figma-color-border, #e5e5e5);
-      color: var(--figma-color-text, #333);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.5); backdrop-filter: blur(10px);
     }
     .button-secondary:hover {
-      border-color: #b3b3b3;
+      background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.2);
     }
-
-    /* Active State for Sync Button */
     .button-secondary.is-active {
-      border-color: #18A0FB;
-      color: #18A0FB;
-      background-color: rgba(24, 160, 251, 0.05);
-      font-weight: 600;
+      background: linear-gradient(135deg, rgba(247, 151, 30, 0.2) 0%, rgba(255, 210, 0, 0.2) 100%);
+      border: 1px solid rgba(247, 151, 30, 0.5); color: #ffb84d;
+      box-shadow: 0 4px 15px rgba(247, 151, 30, 0.3);
     }
-
-    /* To Parent Button */
+    .button-secondary.is-active:hover { transform: translateY(-2px); }
     #to-parent-btn {
-      display: none; /* Hidden by default */
-      background: none;
-      border: none;
-      color: #18A0FB;
-      font-size: 11px;
-      text-decoration: underline;
-      padding: 4px;
-      margin-bottom: 4px;
-      width: auto;
-      cursor: pointer;
-      text-align: left;
+      display: none; background: none; border: none; color: #ffb84d;
+      font-size: 11px; padding: 6px 0; margin-bottom: 4px; width: auto;
+      cursor: pointer; text-align: left; font-weight: 500; transition: all 0.2s;
     }
-    #to-parent-btn:hover {
-      color: #0D8CE9;
+    #to-parent-btn:hover { color: #ffd27a; transform: translateX(2px); }
+    .options-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px; padding: 8px; margin: 8px 0;
+      backdrop-filter: blur(10px);
     }
-
+    .options-title {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1px; margin-bottom: 6px; color: rgba(255, 255, 255, 0.6);
+    }
+    .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
+    label {
+      display: flex; align-items: center; font-size: 11px;
+      padding: 3px 4px; border-radius: 6px; cursor: pointer;
+      transition: all 0.2s; color: rgba(255, 255, 255, 0.7);
+    }
+    label:hover { background: rgba(255, 255, 255, 0.05); color: rgba(255, 255, 255, 0.9); }
+    input[type="checkbox"] {
+      margin-right: 8px; cursor: pointer;
+      width: 14px; height: 14px; accent-color: #f7971e;
+    }
     .help-text {
-      font-size: 11px;
-      color: var(--figma-color-text-secondary, #888);
-      margin-top: 8px;
-      line-height: 1.4;
+      font-size: 10px; color: rgba(255, 255, 255, 0.4);
+      margin-top: 6px; line-height: 1.5; text-align: center;
     }
-
-    /* Figma Theme Vars Mockup */
-    :root {
-      --figma-color-text: #333333;
-      --figma-color-bg: #FFFFFF;
-      --figma-color-border: #E5E5E5;
-    }
-    
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --figma-color-text: #FFFFFF;
-        --figma-color-bg: #2C2C2C;
-        --figma-color-border: #444444;
-        --figma-color-text-secondary: #B0B0B0;
-      }
-      .button-secondary {
-         border-color: #444;
-         color: white;
-      }
-    }
-
-    .sync-section {
-      margin: 12px 0;
-      border-top: 1px solid var(--figma-color-border);
-      padding-top: 12px;
-    }
-
-    .sync-section-title {
-      font-size: 11px;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-
-    .options-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4px;
-    }
-
-    .option-label {
-      display: flex;
-      align-items: center;
-      font-size: 11px;
-    }
-
-    .button-container {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-    }
-
-    .sync-btn-wrapper {
-      opacity: 0.5;
-      cursor: default;
-    }
+    .sync-btn-wrapper { display: flex; flex-direction: column; align-items: flex-start; }
   </style>
 </head>
 <body>
   <h2>Connect-Comp</h2>
-  
-  <button id="create-btn" class="button-primary">Create Linked Copy</button>
-  
-  <div class="sync-section">
-    <div class="sync-section-title">Sync Options</div>
+  <button id="create-btn" class="button-primary">✨ Create Linked Copy</button>
+  <div class="options-card">
+    <div class="options-title">Sync Options</div>
     <div class="options-grid">
-      <label class="option-label">
-        <input type="checkbox" id="opt-fills" checked> Fills
-      </label>
-      <label class="option-label">
-        <input type="checkbox" id="opt-strokes" checked> Strokes
-      </label>
-      <label class="option-label">
-        <input type="checkbox" id="opt-effects" checked> Effects
-      </label>
-      <label class="option-label">
-        <input type="checkbox" id="opt-text" checked> Text
-      </label>
-      <label class="option-label">
-        <input type="checkbox" id="opt-corners" checked> Corners
-      </label>
-      <label class="option-label">
-        <input type="checkbox" id="opt-flow" checked> Flow
-      </label>
-      <label class="option-label">
-        <input type="checkbox" id="opt-dimension" checked> Dimension
-      </label>
-      <label class="option-label">
-        <input type="checkbox" id="opt-gap" checked> Gap
-      </label>
-      <label class="option-label">
-        <input type="checkbox" id="opt-padding" checked> Padding
-      </label>
-      <label class="option-label">
-        <input type="checkbox" id="opt-name" checked> Layer Name
-      </label>
+      <label><input type="checkbox" id="opt-fills" checked> 🎨 Fills</label>
+      <label><input type="checkbox" id="opt-strokes" checked> 🖊️ Strokes</label>
+      <label><input type="checkbox" id="opt-effects" checked> ✨ Effects</label>
+      <label><input type="checkbox" id="opt-text" checked> 📝 Text</label>
+      <label><input type="checkbox" id="opt-corners" checked> ⬛ Corners</label>
+      <label><input type="checkbox" id="opt-flow" checked> 🔄 Flow</label>
+      <label><input type="checkbox" id="opt-dimension" checked> 📐 Dimension</label>
+      <label><input type="checkbox" id="opt-gap" checked> ↔️ Gap</label>
+      <label><input type="checkbox" id="opt-padding" checked> 📦 Padding</label>
+      <label><input type="checkbox" id="opt-name" checked> 🏷️ Layer Name</label>
     </div>
   </div>
-
-  <div class="button-container">
-    <button id="to-parent-btn">To parent ↗</button>
-    <button id="sync-btn" class="button-secondary sync-btn-wrapper" disabled>Sync Updates</button>
+  <div class="sync-btn-wrapper">
+    <button id="to-parent-btn">↗ Jump to Parent</button>
+    <button id="sync-btn" class="button-secondary" disabled style="opacity: 0.5; cursor: default;">🔗 Sync Updates</button>
   </div>
-  
-  <p class="help-text">Select a component to create a linked copy. Select a linked frame to sync.</p>
-
+  <p class="help-text">Select a component to create a linked copy · Select a linked frame to sync styles</p>
   <script>
     const syncBtn = document.getElementById('sync-btn');
     const parentBtn = document.getElementById('to-parent-btn');
-
     document.getElementById('create-btn').onclick = () => {
       parent.postMessage({ pluginMessage: { type: 'create-linked' } }, '*');
     };
-
     document.getElementById('to-parent-btn').onclick = () => {
       parent.postMessage({ pluginMessage: { type: 'go-to-source' } }, '*');
     };
-
     syncBtn.onclick = () => {
       if (syncBtn.disabled) return;
       const options = {
@@ -211,33 +129,26 @@
         flow: document.getElementById('opt-flow').checked,
         dimension: document.getElementById('opt-dimension').checked,
         gap: document.getElementById('opt-gap').checked,
-        padding: document.getElementById('opt-padding').checked
+        padding: document.getElementById('opt-padding').checked,
+        name: document.getElementById('opt-name').checked
       };
       parent.postMessage({ pluginMessage: { type: 'sync', options } }, '*');
     };
-
-    // Handle messages from plugin code
     window.onmessage = (event) => {
       const msg = event.data.pluginMessage;
       if (msg.type === 'selection-changed') {
         if (msg.hasLink) {
-          syncBtn.disabled = false;
-          syncBtn.classList.add('is-active');
-          syncBtn.classList.remove('sync-btn-wrapper');
-          parentBtn.style.display = 'block';
+          syncBtn.disabled = false; syncBtn.style.opacity = '1'; syncBtn.style.cursor = 'pointer';
+          syncBtn.classList.add('is-active'); parentBtn.style.display = 'block';
         } else {
-          syncBtn.disabled = true;
-          syncBtn.classList.remove('is-active');
-          syncBtn.classList.add('sync-btn-wrapper');
-          parentBtn.style.display = 'none';
+          syncBtn.disabled = true; syncBtn.style.opacity = '0.5'; syncBtn.style.cursor = 'default';
+          syncBtn.classList.remove('is-active'); parentBtn.style.display = 'none';
         }
       }
     };
-
-    // Auto-resize
     window.onload = () => {
       const height = document.body.offsetHeight;
-      parent.postMessage({ pluginMessage: { type: 'resize', width: 240, height: height } }, '*');
+      parent.postMessage({ pluginMessage: { type: 'resize', width: 340, height: height } }, '*');
     };
   </script>
 </body>
