@@ -103,6 +103,41 @@
          color: white;
       }
     }
+
+    .sync-section {
+      margin: 12px 0;
+      border-top: 1px solid var(--figma-color-border);
+      padding-top: 12px;
+    }
+
+    .sync-section-title {
+      font-size: 11px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+    }
+
+    .option-label {
+      display: flex;
+      align-items: center;
+      font-size: 11px;
+    }
+
+    .button-container {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .sync-btn-wrapper {
+      opacity: 0.5;
+      cursor: default;
+    }
   </style>
 </head>
 <body>
@@ -110,45 +145,45 @@
   
   <button id="create-btn" class="button-primary">Create Linked Copy</button>
   
-  <div style="margin: 12px 0; border-top: 1px solid var(--figma-color-border); padding-top: 12px;">
-    <div style="font-size: 11px; font-weight: 600; margin-bottom: 8px;">Sync Options</div>
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
-      <label style="display: flex; align-items: center; font-size: 11px;">
+  <div class="sync-section">
+    <div class="sync-section-title">Sync Options</div>
+    <div class="options-grid">
+      <label class="option-label">
         <input type="checkbox" id="opt-fills" checked> Fills
       </label>
-      <label style="display: flex; align-items: center; font-size: 11px;">
+      <label class="option-label">
         <input type="checkbox" id="opt-strokes" checked> Strokes
       </label>
-      <label style="display: flex; align-items: center; font-size: 11px;">
+      <label class="option-label">
         <input type="checkbox" id="opt-effects" checked> Effects
       </label>
-      <label style="display: flex; align-items: center; font-size: 11px;">
+      <label class="option-label">
         <input type="checkbox" id="opt-text" checked> Text
       </label>
-      <label style="display: flex; align-items: center; font-size: 11px;">
+      <label class="option-label">
         <input type="checkbox" id="opt-corners" checked> Corners
       </label>
-      <label style="display: flex; align-items: center; font-size: 11px;">
+      <label class="option-label">
         <input type="checkbox" id="opt-flow" checked> Flow
       </label>
-      <label style="display: flex; align-items: center; font-size: 11px;">
+      <label class="option-label">
         <input type="checkbox" id="opt-dimension" checked> Dimension
       </label>
-      <label style="display: flex; align-items: center; font-size: 11px;">
+      <label class="option-label">
         <input type="checkbox" id="opt-gap" checked> Gap
       </label>
-      <label style="display: flex; align-items: center; font-size: 11px;">
+      <label class="option-label">
         <input type="checkbox" id="opt-padding" checked> Padding
       </label>
-      <label style="display: flex; align-items: center; font-size: 11px;">
+      <label class="option-label">
         <input type="checkbox" id="opt-name" checked> Layer Name
       </label>
     </div>
   </div>
 
-  <div style="display: flex; flex-direction: column; align-items: flex-start;">
+  <div class="button-container">
     <button id="to-parent-btn">To parent ↗</button>
-    <button id="sync-btn" class="button-secondary" disabled style="opacity: 0.5; cursor: default;">Sync Updates</button>
+    <button id="sync-btn" class="button-secondary sync-btn-wrapper" disabled>Sync Updates</button>
   </div>
   
   <p class="help-text">Select a component to create a linked copy. Select a linked frame to sync.</p>
@@ -176,8 +211,7 @@
         flow: document.getElementById('opt-flow').checked,
         dimension: document.getElementById('opt-dimension').checked,
         gap: document.getElementById('opt-gap').checked,
-        padding: document.getElementById('opt-padding').checked,
-        name: document.getElementById('opt-name').checked
+        padding: document.getElementById('opt-padding').checked
       };
       parent.postMessage({ pluginMessage: { type: 'sync', options } }, '*');
     };
@@ -188,15 +222,13 @@
       if (msg.type === 'selection-changed') {
         if (msg.hasLink) {
           syncBtn.disabled = false;
-          syncBtn.style.opacity = '1';
-          syncBtn.style.cursor = 'pointer';
           syncBtn.classList.add('is-active');
+          syncBtn.classList.remove('sync-btn-wrapper');
           parentBtn.style.display = 'block';
         } else {
           syncBtn.disabled = true;
-          syncBtn.style.opacity = '0.5';
-          syncBtn.style.cursor = 'default';
           syncBtn.classList.remove('is-active');
+          syncBtn.classList.add('sync-btn-wrapper');
           parentBtn.style.display = 'none';
         }
       }
